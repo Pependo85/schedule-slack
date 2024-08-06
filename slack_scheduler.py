@@ -11,7 +11,7 @@ USER_GROUP_ID = os.getenv('USER_GROUP_ID')
 if not SLACK_TOKEN or not USER_GROUP_ID:
     raise ValueError("SLACK_TOKEN or USER_GROUP_ID not set in the environment")
 
-print(f"SLACK_TOKEN: {SLACK_TOKEN}")
+print(f"SLACK_TOKEN: {SLACK_TOKEN[:5]}...")  # Imprimir solo una parte del token por seguridad
 print(f"USER_GROUP_ID: {USER_GROUP_ID}")
 
 # Definición de los IDs de los usuarios
@@ -60,9 +60,11 @@ def update_user_group(user_id):
         'usergroup': USER_GROUP_ID,
         'users': user_id,
     }
+    print(f"Sending request to {url} with data {data}")
     response = requests.post(url, headers=headers, json=data)
-    print(f"Request to {url} with data {data}")
+    print(f"Request sent. Response status code: {response.status_code}")
     if response.status_code != 200:
+        print(f"Error response: {response.text}")
         raise Exception(f"Error updating user group: {response.status_code} - {response.text}")
     print(f"Updated user group with user ID {user_id}: {response.json()}")
     return response.json()
